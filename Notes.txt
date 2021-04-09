@@ -1,0 +1,15 @@
+===============================================================================
+MYSQL
+
+* command: SHOW DATABASES;
+* result: Shows list of all databases
+
+* command: USE {database_name}
+* result: Changes active database to database_name
+
+* command: SHOW TABLES;
+* result: Shows list of all tables in active database
+
+* command: CREATE TABLE {table_name}
+* result: Creates a new table called {table_name}
+===============================================================================

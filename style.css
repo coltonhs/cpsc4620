@@ -1,0 +1,26 @@
+body{
+    /*
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;\
+    */
+}
+
+input{
+    /*
+    display: block;
+    padding: 1px;
+    margin: 10px;
+    */
+}
+
+.error {
+    background: #F2DEDE;
+    color: #A94442;
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+}
+
+
