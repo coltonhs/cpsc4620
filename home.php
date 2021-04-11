@@ -14,6 +14,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
      <h1>Hello, <?php echo $_SESSION['name']; ?></h1>
      <a href="profile.php">Update Profile</a>
      <a href="logout.php">Logout</a>
+     <a href="contacts.php">Contacts</a>
 
      <br>
      <form action="upload.php" method="post" enctype="multipart/form-data">
