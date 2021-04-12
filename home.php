@@ -9,10 +9,13 @@ if(isset($_POST['but_upload'])){
        $name = $_FILES['file']['name'];
        $target_dir = "videos/";
        $target_file = $target_dir . $_FILES["file"]["name"];
+<<<<<<< HEAD
        $title = $_POST['title'];
        $description = $_POST['description'];
        $keywords = $_POST['keywords'];
        $category = $_POST['category'];
+=======
+>>>>>>> 329dbca94793fa051ba49abdf33fb3f1e78f4899
 
        // Select file type
        $extension = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -30,6 +33,7 @@ if(isset($_POST['but_upload'])){
              // Upload
              if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
                 // Insert record
+<<<<<<< HEAD
                $query = "INSERT INTO videos(name,location,title,description,keywords,category) VALUES('".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
 
                mysqli_query($conn,$query);
@@ -38,6 +42,16 @@ if(isset($_POST['but_upload'])){
              }
           }
 
+=======
+               $query = "INSERT INTO videos(name,location) VALUES('".$name."','".$target_file."')";
+
+               mysqli_query($conn,$query);
+               $_SESSION['message'] = "Upload successfully.";
+                               
+             }
+          }
+
+>>>>>>> 329dbca94793fa051ba49abdf33fb3f1e78f4899
        }else{
           $_SESSION['message'] = "Invalid file extension.";
        }
@@ -74,6 +88,7 @@ if(isset($_POST['but_upload'])){
        unset($_SESSION['message']);
         }
      ?>
+<<<<<<< HEAD
      <h2>Upload Videos</h2>
      <br>
      <label for="video">Select video file</label>
@@ -114,6 +129,11 @@ if(isset($_POST['but_upload'])){
         <option value="science">Science & Technology</option>
         <option value="nonprofits">Nonprofits & Activism</option>
       </select>
+=======
+     <form method="post" action="" enctype='multipart/form-data'>
+      <input type='file' name='file' />
+      <input type='submit' value='Upload' name='but_upload'>
+>>>>>>> 329dbca94793fa051ba49abdf33fb3f1e78f4899
     </form>
 
     <!--View Uploaded Videos-->
@@ -123,21 +143,30 @@ if(isset($_POST['but_upload'])){
 
         while($row = mysqli_fetch_array($result , MYSQLI_ASSOC)){
         $vid=$row['name'];
+<<<<<<< HEAD
         $title=$row['title'];
         $description=$row['description'];
         $keywords=$row['keywords'];
         $category=$row['category'];
+=======
+>>>>>>> 329dbca94793fa051ba49abdf33fb3f1e78f4899
     ?>
     <video width="40%" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
     </video>
     <br>
+<<<<<<< HEAD
     <h3><?php echo $title; ?></h3>
     <p><?php echo $description; ?></p>
     <p>Keywords: <?php echo $keywords; ?></p>
     <p>Category: <?php echo $category; ?></p>
     <a href="videos/<?php echo $vid; ?>" download>Download</a>
     <br>
+=======
+    <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
+    <br>
+>>>>>>> 329dbca94793fa051ba49abdf33fb3f1e78f4899
      <?php   }
     ?>
 
