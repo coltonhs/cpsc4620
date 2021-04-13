@@ -37,7 +37,13 @@ if(isset($_POST['but_upload'])){
                                
              }
           }
+               $query = "INSERT INTO videos(name,location) VALUES('".$name."','".$target_file."')";
 
+               mysqli_query($conn,$query);
+               $_SESSION['message'] = "Upload successfully.";
+                               
+             }
+          }
        }else{
           $_SESSION['message'] = "Invalid file extension.";
        }
@@ -114,6 +120,9 @@ if(isset($_POST['but_upload'])){
         <option value="science">Science & Technology</option>
         <option value="nonprofits">Nonprofits & Activism</option>
       </select>
+     <form method="post" action="" enctype='multipart/form-data'>
+      <input type='file' name='file' />
+      <input type='submit' value='Upload' name='but_upload'>
     </form>
 
     <!--View Uploaded Videos-->
@@ -123,10 +132,16 @@ if(isset($_POST['but_upload'])){
 
         while($row = mysqli_fetch_array($result , MYSQLI_ASSOC)){
         $vid=$row['name'];
+		ee4648b53dc8cbc55e5703d08fd6bde91863bac6
         $title=$row['title'];
         $description=$row['description'];
         $keywords=$row['keywords'];
         $category=$row['category'];
+		HEAD
+		
+		
+		329dbca94793fa051ba49abdf33fb3f1e78f4899
+		ee4648b53dc8cbc55e5703d08fd6bde91863bac6
     ?>
     <video width="40%" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
@@ -137,6 +152,9 @@ if(isset($_POST['but_upload'])){
     <p>Keywords: <?php echo $keywords; ?></p>
     <p>Category: <?php echo $category; ?></p>
     <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
+    <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
     <br>
      <?php   }
     ?>
