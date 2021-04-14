@@ -32,6 +32,26 @@ if(isset($_POST['but_upload'])){
                 // Insert record
                $query = "INSERT INTO videos(name,location,title,description,keywords,category) VALUES('".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
 
+
+       // Check extension
+       if( in_array($extension,$extensions_arr) ){
+ 
+          // Check file size
+          if(($_FILES['file']['size'] >= $maxsize) || ($_FILES["file"]["size"] == 0)) {
+             $_SESSION['message'] = "File too large. File must be less than 10MB.";
+          }else{
+             // Upload
+             if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
+                // Insert record
+               $query = "INSERT INTO videos(name,location,title,description,keywords,category) VALUES('".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
+
+               mysqli_query($conn,$query);
+               $_SESSION['message'] = "Upload successfully.";
+                               
+             }
+          }
+               $query = "INSERT INTO videos(name,location) VALUES('".$name."','".$target_file."')";
+
                mysqli_query($conn,$query);
                $_SESSION['message'] = "Upload successfully.";
                                
@@ -68,6 +88,18 @@ if(isset($_POST['but_upload'])){
      <a href="search_keyword.php">Search By Keyword</a>
      <a href="channel.php">My Channel</a>
 
+     <br>
+
+     <!--Upload Response-->
+     <?php
+        if(isset($_SESSION['message'])){
+       echo $_SESSION['message'];
+       unset($_SESSION['message']);
+        }
+     ?>
+     <h2>Upload Videos</h2>
+     <br>
+     <label for="video">Select video file</label>
      <br>
 
      <!--Upload Response-->
@@ -121,6 +153,11 @@ if(isset($_POST['but_upload'])){
     <br>
     <br>
     <br>
+     <form method="post" action="" enctype='multipart/form-data'>
+      <input type='file' name='file' />
+      <input type='submit' value='Upload' name='but_upload'>
+    </form>
+
     <!--View Uploaded Videos-->
     <?php
         $sql = "select * from videos";
@@ -163,6 +200,10 @@ if(isset($_POST['but_upload'])){
     </form>
     <a href="videos/<?php echo $vid; ?>" download>Download</a>
 
+    <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
+    <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
     <br>
      <?php   }
     ?>
