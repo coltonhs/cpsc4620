@@ -50,7 +50,6 @@ include "db_conn.php";
     ?>
      <h2>Playlist</h2>
      <br>
-     <h2>Playlist</h2>
      
 <br>
 </body>
@@ -120,23 +119,6 @@ include "db_conn.php";
         $description=$row2['description'];
         $keywords=$row2['keywords'];
         $category=$row2['category'];
-    if(isset($_POST['category'])) {
-        $category = $_POST['category'];
-        $sql = "select * from videos where category='$category'";
-        $result = mysqli_query($conn, $sql);
-
-        if(mysqli_num_rows($result) === 0){
-        $_SESSION['message'] = "Sorry, there are no videos of that category.";
-        echo $_SESSION['message'];
-        }
-
-        while($row = mysqli_fetch_array($result , MYSQLI_ASSOC)){
-        $vid=$row['name'];
-        $title=$row['title'];
-        $description=$row['description'];
-        $keywords=$row['keywords'];
-        $category=$row['category'];
-     
     ?>
     <video width="40%" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
@@ -150,7 +132,5 @@ include "db_conn.php";
 
     <br>
      <?php   }
-    <br>
-     <?php   }}
     ?>
 </html>

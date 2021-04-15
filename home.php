@@ -1,11 +1,13 @@
 <?php 
 session_start();
 include "db_conn.php";
+
 if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
-if(isset($_POST['but_upload'])){
-   $maxsize = 10485760; // 10MB
-  
-   if(isset($_FILES['file']['name']) && $_FILES['file']['name'] != ''){
+
+  if(isset($_POST['but_upload'])){
+    $maxsize = 10485760; // 10MB
+
+    if(isset($_FILES['file']['name']) && $_FILES['file']['name'] != ''){
       $name = $_FILES['file']['name'];
       $target_dir = "videos/";
       $target_file = $target_dir . $_FILES["file"]["name"];
@@ -23,59 +25,35 @@ if(isset($_POST['but_upload'])){
 
       // Check extension
       if( in_array($extension,$extensions_arr) ){
-         // Check file size
-         if(($_FILES['file']['size'] >= $maxsize) || ($_FILES["file"]["size"] == 0)) {
-            $_SESSION['message'] = "File too large. File must be less than 10MB.";
-         }else{
-            // Upload
-            if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
-               // Insert record
-               $query = "INSERT INTO videos(name,location,title,description,keywords,category) VALUES('".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
-               
-               // Check extension
-               if( in_array($extension,$extensions_arr) ){
- 
-                  // Check file size
-                  if(($_FILES['file']['size'] >= $maxsize) || ($_FILES["file"]["size"] == 0)) {
-                     $_SESSION['message'] = "File too large. File must be less than 10MB.";
-                  }else{
-                     // Upload
-                     if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
-                        // Insert record
-                        $duplicates = "select * from videos where name = '$name'";
-                        $dups = mysqli_query($conn, $duplicates);
-                           if(mysqli_num_rows($dups) === 0){
-                              $query = "INSERT INTO videos(uploader,name,location,title,description,keywords,category) VALUES('".$uploader."','".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
-                              mysqli_query($conn,$query);
-                              $_SESSION['message'] = "Upload successfully.";    
-                           }
-                           else {
-                              echo "A video with that filename has already been uploaded. Rename the file and try again.";
-                           }
-               
-                           $query = "INSERT INTO videos(name,location,title,description,keywords,category) VALUES('".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
-                           mysqli_query($conn,$query);
-                           $_SESSION['message'] = "Upload successfully.";               
-                     }    
-                  }
-                  
-                  $query = "INSERT INTO videos(name,location) VALUES('".$name."','".$target_file."')";
-                  mysqli_query($conn,$query);
-                  $_SESSION['message'] = "Upload successfully.";             
-               }         
-               else{
-                  $_SESSION['message'] = "Invalid file extension.";
-               }
-      }else{
-         $_SESSION['message'] = "Please select a file.";
+      
+        // Check file size
+        if(($_FILES['file']['size'] >= $maxsize) || ($_FILES["file"]["size"] == 0)) {
+          $_SESSION['message'] = "File too large. File must be less than 10MB.";
+        }else{
+          // Upload
+          if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
+            // Insert record
+            $duplicates = "select * from videos where name = '$name'";
+            $dups = mysqli_query($conn, $duplicates);
+            if(mysqli_num_rows($dups) === 0){
+              $query = "INSERT INTO videos(uploader,name,location,title,description,keywords,category) VALUES('".$uploader."','".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
+              mysqli_query($conn,$query);
+              $_SESSION['message'] = "Upload successfully.";                            
+            }
+            else {
+              echo '<script>alert("A video with that filename has already been uploaded. Rename the file and try again.")</script>';
+            }
+        }
       }
-   header('location: home.php');
-   exit;
+    }else{
+      echo '<script>alert("Invalid file extension.")</script>';
+    }
+  }else{
+    echo '<script>alert("Please select a file to upload and try again.")</script>';
+  }
 } 
-      }
-   }
-}
- ?>
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,24 +77,6 @@ if(isset($_POST['but_upload'])){
      <br>
 
      <!--Upload Response-->
-     <?php
-        if(isset($_SESSION['message'])){
-       echo $_SESSION['message'];
-       unset($_SESSION['message']);
-        }
-     ?>
-     <h2>Upload Videos</h2>
-     <br>
-     <label for="video">Select video file</label>
-     <br>
-
-     <!--Upload Response-->
-     <?php
-        if(isset($_SESSION['message'])){
-       echo $_SESSION['message'];
-       unset($_SESSION['message']);
-        }
-     ?>
      <h2>Upload Videos</h2>
      <br>
      <label for="video">Select video file</label>
@@ -161,11 +121,7 @@ if(isset($_POST['but_upload'])){
     <br>
     <br>
     <br>
-     <form method="post" action="" enctype='multipart/form-data'>
-      <input type='file' name='file' />
-      <input type='submit' value='Upload' name='but_upload'>
-    </form>
-
+    
     <!--View Uploaded Videos-->
     <?php
         $sql = "select * from videos";
@@ -181,102 +137,6 @@ if(isset($_POST['but_upload'])){
     <video width="40%" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
     </video>
-    <br>
-    <h3><?php echo $title; ?></h3>
-    <p><?php echo $description; ?></p>
-    <p>Keywords: <?php echo $keywords; ?></p>
-    <p>Category: <?php echo $category; ?></p>
-    <form method="post">
-    <input id="addToPlaylist" name="addToPlaylist" type="submit" value="Add to Playlist">
-    <?php
-        if(isset($_POST['addToPlayList'])){
-        $_SESSION['message']= "testing piaunvijernpv";
-        echo $_SESSION['message'];
-        $name = $_SESSION['name'];
-        $videoid = $vid;
-
-        $sql = "INSERT INTO `playlists` (`playlistid`, `user`, `videoid`) VALUES (NULL, '$name', '$videoid');";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "New record created successfully";
-          } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-          } 
-     
-        }
-    ?>
-    </form>
-    <a href="videos/<?php echo $vid; ?>" download>Download</a>
-
-    <a href="videos/<?php echo $vid; ?>" download>Download</a>
-    <br>
-    <a href="videos/<?php echo $vid; ?>" download>Download</a>
-    <br>
-    <br>
-     <?php   }
-    ?>
-
-     <!--Upload Response-->
-     <h2>Upload Videos</h2>
-     <br>
-     <label for="video">Select video file</label>
-     <br>
-     <form method="post" action="" enctype='multipart/form-data'>
-      <input type='file' name='file' />
-      <input type='submit' value='Upload' name='but_upload'>
-      <br>
-      <label for="title">Title:</label>
-      <br>
-      <input type='text' placeholder='Title' name='title'>
-      <br>
-      <label for="description">Description:</label>
-      <br>
-      <textarea placeholder="Add a description" name="description" rows="10" cols="30"></textarea>
-      <br>
-      <label for="keywords">Keywords:</label>
-      <br>
-      <textarea placeholder="Please separate keywords with a comma" name="keywords" rows="1" cols="50" ></textarea>
-      <br>
-      <label for="category">Choose a category:</label>
-      <br>
-      <select id="category" name="category">
-        <option value="select">Select a Category</option>
-        <option value="film">Film & Animation</option>
-        <option value="auto">Autos & Vehicles</option>
-        <option value="music">Music</option>
-        <option value="animals">Pets & Animals</option>
-        <option value="sports">Sports</option>
-        <option value="travel">Travel & Events</option>
-        <option value="gaming">Gaming</option>
-        <option value="blog">People & Blogs</option>
-        <option value="comedy">Comedy</option>
-        <option value="entertainment">Entertainment</option>
-        <option value="news">News & Politics</option>
-        <option value="howto">Howto & Style</option>
-        <option value="edu">Education</option>
-        <option value="science">Science & Technology</option>
-        <option value="nonprofits">Nonprofits & Activism</option>
-      </select>
-    </form>
-    <br>
-    <br>
-    <br>
-    <!--View Uploaded Videos-->
-    <?php
-        $sql = "select * from videos";
-        $result = mysqli_query($conn, $sql);
-
-        while($row = mysqli_fetch_array($result , MYSQLI_ASSOC)){
-        $vid=$row['name'];
-        $title=$row['title'];
-        $description=$row['description'];
-        $keywords=$row['keywords'];
-        $category=$row['category'];
-    ?>
-    <video width="40%" controls>
-    <source src="videos/<?php echo $vid; ?>" type="video/mp4">
-    </video>
-    <br>
     <h3><?php echo $title; ?></h3>
     <p><?php echo $description; ?></p>
     <p>Keywords: <?php echo $keywords; ?></p>
@@ -285,9 +145,24 @@ if(isset($_POST['but_upload'])){
     <input type="hidden" value="<?php echo (isset($vid))?$vid:'';?>" name="location">
     <input id="addToPlaylist" name="addToPlaylist" type="submit" value="Add to Playlist">    
     </form>
-    <a href="videos/<?php echo $vid; ?>" download>Download</a>
-
     <br>
+    <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <br>
+    <br>
+
+
+
+
+   <form action='comments.php' method='post'>
+   <label>Leave a Comment:</label>
+   <br>
+   <input type="hidden" value="<?php echo (isset($vid))?$vid:'';?>" name="video_to_comment">
+   <textarea id="comment" name="comment" rows="4" cols="39">
+  </textarea>
+  <br>
+   <button type='submit' name='post_comment' value='post_comment'>Post Comment</button>
+</form>
+
      <?php   }
     ?>
     <?php
@@ -315,3 +190,16 @@ if(isset($_POST['but_upload'])){
      exit();
 }
  ?>
+
+
+
+
+
+
+
+
+
+
+
+
+ 
