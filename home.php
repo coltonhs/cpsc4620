@@ -46,6 +46,16 @@ if(isset($_POST['but_upload'])){
  ?>
 <!DOCTYPE html>
 <html>
+<style>
+.grid {
+   display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+</style>
+
 <head>
 	<title>HOME</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
@@ -70,6 +80,8 @@ if(isset($_POST['but_upload'])){
       <input type='submit' value='Upload' name='but_upload'>
     </form>
 
+   
+   <div className="grid">
     <!--View Uploaded Videos-->
     <?php
         $sql = "select * from videos";
@@ -78,16 +90,33 @@ if(isset($_POST['but_upload'])){
         while($row = mysqli_fetch_array($result , MYSQLI_ASSOC)){
         $vid=$row['name'];
     ?>
-    <video width="40%" controls>
+    <video width="300px" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
     </video>
     <br>
     <a href="videos/<?php echo $vid; ?>" download>Download</a>
+    <a href="comments.php">Comment</a>
+    <br>
+
+
+
+   <form action='comments.php' method='post'>
+   <label>Leave a Comment:</label>
+   <br>
+   <input type="hidden" value="<?php echo (isset($vid))?$vid:'';?>" name="video_to_comment">
+   <textarea id="comment" name="comment" rows="4" cols="39">
+  </textarea>
+  <br>
+   <button type='submit' name='post_comment' value='post_comment'>Post Comment</button>
+</form>
+
+
+
     <br>
     <br>
      <?php   }
     ?>
-
+    </div>
 </html>
 
 <?php 
