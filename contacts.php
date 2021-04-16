@@ -91,7 +91,6 @@ if (mysqli_num_rows($result) > 0) {
 
 ?>
 
-
 <br>
 <a href="home.php">Back</a>
 </body>

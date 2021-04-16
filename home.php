@@ -5,7 +5,6 @@ include "db_conn.php";
 if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
 
   if(isset($_POST['upload_video'])){
-    $max_file_size = 10485760; // 10MB
 
     if(isset($_FILES['file']['name']) && $_FILES['file']['name'] != ''){
       $name = $_FILES['file']['name'];
@@ -18,10 +17,10 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
       $category = $_POST['category'];
 
       $ext = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-
       $valid_extensions = array("mp4","avi","3gp","mov","mpeg");
+      $max_file_size = 10485760; // 10MB
 
-      if( in_array($ext,$valid_extensions) ){
+      if(in_array($ext,$valid_extensions)){
       
         if(($_FILES['file']['size'] >= $max_file_size) || ($_FILES["file"]["size"] == 0)) {
           echo '<script>alert("The file you are trying to upload is too large. File must be less than 10MB.")</script>';
@@ -30,7 +29,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
             $duplicates = "select * from videos where name = '$name'";
             $dups = mysqli_query($conn, $duplicates);
             if(mysqli_num_rows($dups) === 0){
-              $query = "INSERT INTO videos(uploader,name,location,title,description,keywords,category) VALUES('".$uploader."','".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
+              $query = "INSERT INTO videos(uploader,name,location,title,description,keywords,category) VALUES('$uploader','$name','$target_file','$title','$description','$keywords','$category')";
               mysqli_query($conn,$query);
               echo '<script>alert("Video was uploaded successfully!")</script>';                           
             }
@@ -153,27 +152,26 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
   </textarea>
   <br>
    <button type='submit' name='post_comment' value='post_comment'>Post Comment</button>
-</form>
+   </form>
 
-     <?php   }
-    ?>
-    <?php
-        if(isset($_POST['location'])){
-        $location = $_POST['location'];
-        $dir = "videos/";
-        $path = $dir . $location;
-        $name = $_SESSION['name'];
+   <?php   }
+   ?>
+   <?php
+      if(isset($_POST['location'])){
+         $location = $_POST['location'];
+         $dir = "videos/";
+         $path = $dir . $location;
+         $name = $_SESSION['name'];
 
-        $sql = "INSERT INTO `playlists` (`playlistid`, `user`, `videoid`) VALUES (NULL, '$name', '$path');";
+         $sql = "INSERT INTO `playlists` (`playlistid`, `user`, `videoid`) VALUES (NULL, '$name', '$path');";
 
-        if ($conn->query($sql) === TRUE) {
+         if ($conn->query($sql) === TRUE) {
             echo "New record created successfully";
-          } else {
+         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
-          } 
-     
-        }
-    ?>
+         } 
+      }
+   ?>
 </html>
 
 <?php 
@@ -181,7 +179,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
      header("Location: index.php");
      exit();
 }
- ?>
+?>
 
 
 
