@@ -4,8 +4,8 @@ include "db_conn.php";
 
 if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
 
-  if(isset($_POST['but_upload'])){
-    $maxsize = 10485760; // 10MB
+  if(isset($_POST['upload_video'])){
+    $max_file_size = 10485760; // 10MB
 
     if(isset($_FILES['file']['name']) && $_FILES['file']['name'] != ''){
       $name = $_FILES['file']['name'];
@@ -17,28 +17,22 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
       $keywords = $_POST['keywords'];
       $category = $_POST['category'];
 
-      // Select file type
-      $extension = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+      $ext = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 
-      // Valid file extensions
-      $extensions_arr = array("mp4","avi","3gp","mov","mpeg");
+      $valid_extensions = array("mp4","avi","3gp","mov","mpeg");
 
-      // Check extension
-      if( in_array($extension,$extensions_arr) ){
+      if( in_array($ext,$valid_extensions) ){
       
-        // Check file size
-        if(($_FILES['file']['size'] >= $maxsize) || ($_FILES["file"]["size"] == 0)) {
-          $_SESSION['message'] = "File too large. File must be less than 10MB.";
+        if(($_FILES['file']['size'] >= $max_file_size) || ($_FILES["file"]["size"] == 0)) {
+          echo '<script>alert("The file you are trying to upload is too large. File must be less than 10MB.")</script>';
         }else{
-          // Upload
           if(move_uploaded_file($_FILES['file']['tmp_name'],$target_file)){
-            // Insert record
             $duplicates = "select * from videos where name = '$name'";
             $dups = mysqli_query($conn, $duplicates);
             if(mysqli_num_rows($dups) === 0){
               $query = "INSERT INTO videos(uploader,name,location,title,description,keywords,category) VALUES('".$uploader."','".$name."','".$target_file."','".$title."','".$description."','".$keywords."','".$category."')";
               mysqli_query($conn,$query);
-              $_SESSION['message'] = "Upload successfully.";                            
+              echo '<script>alert("Video was uploaded successfully!")</script>';                           
             }
             else {
               echo '<script>alert("A video with that filename has already been uploaded. Rename the file and try again.")</script>';
@@ -83,7 +77,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
      <br>
      <form method="post" action="" enctype='multipart/form-data'>
       <input type='file' name='file' />
-      <input type='submit' value='Upload' name='but_upload'>
+      <input type='submit' value='Upload' name='upload_video'>
       <br>
       <label for="title">Title:</label>
       <br>
@@ -134,6 +128,7 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
         $keywords=$row['keywords'];
         $category=$row['category'];
     ?>
+
     <video width="40%" controls>
     <source src="videos/<?php echo $vid; ?>" type="video/mp4">
     </video>
@@ -149,9 +144,6 @@ if (isset($_SESSION['id']) && isset($_SESSION['user_name'])) {
     <a href="videos/<?php echo $vid; ?>" download>Download</a>
     <br>
     <br>
-
-
-
 
    <form action='comments.php' method='post'>
    <label>Leave a Comment:</label>

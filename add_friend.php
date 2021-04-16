@@ -43,11 +43,7 @@ if(isset($_POST['new_friend'])) {
                 header("Location: contacts.php");
 
                 $sql = "SELECT `friend_2` FROM friends WHERE $name == 'friend_1'";
-                
-                echo "<h1>FUCK</h1>";
                 exit();
-
-
 
             } else{
                 header("Location: contacts.php?error=User does not exist");
@@ -60,7 +56,6 @@ if(isset($_POST['new_friend'])) {
             exit();
         }
     }
-
 }
 else{
     header("Location: contacts.php?error");
