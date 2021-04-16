@@ -17,12 +17,12 @@ include "db_conn.php";
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-     <h1>Search By Category</h1>
+     <h1>Search By Keyword</h1>
      <a href="home.php">Home</a>
      <a href="profile.php">Update Profile</a>
      <a href="logout.php">Logout</a>
      <a href="contacts.php">Contacts</a>
-     <a href="search_keyword.php">Search By Keyword</a>
+     <a href="search_category.php">Search By Category</a>
      <br>
 
      <form method="post">
