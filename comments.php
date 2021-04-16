@@ -14,14 +14,12 @@ include "db_conn.php";
 
 <?php
 
-    if(isset($_POST['comment'])) {
-
+    if(isset($_POST['comment']) && isset($_POST['video_to_comment'])) {
 
         $comment = $_POST['comment'];
+        $video_to_comment = $_POST['video_to_comment'];
         $name = $_SESSION['name'];
-
-        echo "Creating new user";
-        $sql = "INSERT INTO `comments` VALUES (NULL, '$name', 'this is a test', '$comment');";
+        $sql = "INSERT INTO `comments` VALUES (NULL, '$name', '$video_to_comment', '$comment');";
         if ($conn->query($sql) === TRUE) {
             echo "New record created successfully";
         } else {
@@ -38,7 +36,7 @@ if(isset($_POST['video_to_comment']) && isset($_POST['comment'])) {
 $comment = $_POST['comment'];
 $name = $_SESSION['name'];
 $location = $_POST['video_to_comment'];
-$sql = "SELECT * FROM comments WHERE video='this is a test'";
+$sql = "SELECT * FROM comments WHERE video='$location'";
 $result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
